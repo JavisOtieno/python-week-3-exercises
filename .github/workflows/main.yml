@@ -1,0 +1,37 @@
+name: Python Unit Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+
+    - name: Run unit tests
+      run: |
+        echo "⚙️ Running Tests..."
+        python3 -m unittest discover -s tests -p '*_test.py' -v
+
+    - name: Check result
+      if: ${{ failure() }}
+      run: echo "❌ Some tests failed. Please review the output above."
+
+    - name: Check result on success
+      if: ${{ success() }}
+      run: echo "✅ All tests passed successfully!"
